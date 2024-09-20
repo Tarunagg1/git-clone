@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { CatFileCOmmand, HashObjectCOmmand, LSTreeCommand, WriteTreeCommand } = require('./git/commands');
+const { CatFileCOmmand, HashObjectCOmmand, LSTreeCommand, WriteTreeCommand, CommitCommand } = require('./git/commands');
 const GitClient = require('./git/client');
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -29,9 +29,9 @@ switch (command) {
   case "write-tree":
     handelWriteTreeCommand();
     break
-  // case "commit":
-  //   handelCommitCommand();
-  //   break
+  case "commit":
+    handelCommitCommand();
+    break
   default:
     throw new Error(`Unknown command ${command}`);
 }
@@ -93,7 +93,16 @@ function handelLsTreeCommand() {
 function handelWriteTreeCommand() {
   let flag = process.argv[3];
 
-  const command = new WriteTreeCommand(flag);
+  const command = new WriteTreeCommand();
 
   gitClient.run(command);
 }
+
+function handelCommitCommand() {
+  let flag = process.argv[3];
+
+  const command = new CommitCommand();
+
+  gitClient.run(command);
+}
+

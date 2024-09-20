@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { CatFileCOmmand, HashObjectCOmmand } = require('./git/commands');
+const { CatFileCOmmand, HashObjectCOmmand, LSTreeCommand, WriteTreeCommand } = require('./git/commands');
 const GitClient = require('./git/client');
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -13,6 +13,7 @@ const gitClient = new GitClient();
 
 
 switch (command) {
+
   case "init":
     createGitDirectory();
     break;
@@ -22,6 +23,15 @@ switch (command) {
   case "hash-object":
     handelHashObjectCommand();
     break;
+  case "ls-tree":
+    handelLsTreeCommand();
+    break
+  case "write-tree":
+    handelWriteTreeCommand();
+    break
+  // case "commit":
+  //   handelCommitCommand();
+  //   break
   default:
     throw new Error(`Unknown command ${command}`);
 }
@@ -56,6 +66,34 @@ function handelHashObjectCommand() {
 
 
   const command = new HashObjectCOmmand(flag, filePath);
+
+  gitClient.run(command);
+}
+
+
+function handelLsTreeCommand() {
+  let flag = process.argv[3];
+  let sha = process.argv[4];
+
+
+  if (!sha && flag === '--name-only') return;
+
+  if (!sha) {
+    sha = flag;
+    flag = null;
+  }
+
+  const command = new LSTreeCommand(flag, sha);
+
+  gitClient.run(command);
+}
+
+
+
+function handelWriteTreeCommand() {
+  let flag = process.argv[3];
+
+  const command = new WriteTreeCommand(flag);
 
   gitClient.run(command);
 }
